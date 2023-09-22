@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-
-import '../../controller/user_controller.dart';
 import '../../controller/verse_controller.dart';
 import '../../model/verses_model.dart';
 
@@ -14,22 +12,29 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   late final Box box;
-  final UserController _controller = UserController();
+  final ValueNotifier<String?> userDataNotifier = ValueNotifier<String?>(null);
   final VerseController verseController = VerseController();
   List<VerseData> verses = [];
   List<bool> showFullVerseList = [];
+
   @override
   void initState() {
     super.initState();
     Hive.openBox('versevault');
     box = Hive.box('versevault');
     loadVerses();
+    loadUserData(box);
   }
 
   void toggleShowFullVerse(int index) {
     setState(() {
       showFullVerseList[index] = !showFullVerseList[index];
     });
+  }
+
+  Future<void> loadUserData(Box box) async {
+    var name = box.get('name');
+    userDataNotifier.value = name;
   }
 
   Future<void> loadVerses() async {
@@ -58,9 +63,8 @@ class _DashboardState extends State<Dashboard> {
             decoration: BoxDecoration(
               color: const Color.fromARGB(255, 14, 13, 13),
               image: const DecorationImage(
-                image: AssetImage(
-                    'assets/img/footer.png'),
-                fit: BoxFit.cover, 
+                image: AssetImage('assets/img/footer.png'),
+                fit: BoxFit.cover,
               ),
               borderRadius: BorderRadius.circular(15),
             ),
@@ -70,19 +74,16 @@ class _DashboardState extends State<Dashboard> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                FutureBuilder<String?>(
-                  future: _controller.userData(box),
-                  builder:
-                      (BuildContext context, AsyncSnapshot<String?> snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
+                ValueListenableBuilder<String?>(
+                  valueListenable: userDataNotifier,
+                  builder: (context, userData, child) {
+                    if (userData == null) {
                       return const Center(
                         child: CircularProgressIndicator(
                           color: Color(0xFF070707),
                         ),
                       );
-                    } else if (snapshot.hasError) {
-                      return Text('Error: ${snapshot.error}');
-                    } else if (!snapshot.hasData || snapshot.data == null) {
+                    } else if (userData.isEmpty) {
                       return const Text('No data available');
                     } else {
                       return Column(
@@ -90,7 +91,7 @@ class _DashboardState extends State<Dashboard> {
                           Align(
                             alignment: Alignment.topLeft,
                             child: Text(
-                              "Welcome ${snapshot.data!}",
+                              "Welcome $userData",
                               style: const TextStyle(
                                 fontFamily: 'Millik',
                                 fontSize: 30,
@@ -114,7 +115,7 @@ class _DashboardState extends State<Dashboard> {
                       );
                     }
                   },
-                ),
+                )
               ],
             ),
           ),
