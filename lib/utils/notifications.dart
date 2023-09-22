@@ -25,7 +25,7 @@ class NotificationService {
         assetAudioPath: 'assets/audio/alarm.mp3',
         loopAudio: false,
         vibrate: false,
-        volumeMax: true,
+        volumeMax: false,
         fadeDuration: 3.0,
         notificationTitle: randomVerse.chapter,
         notificationBody: randomVerse.verseText,
@@ -50,12 +50,11 @@ class NotificationService {
     if (randomVerse != null) {
       final alarmSettings = AlarmSettings(
         id: 43,
-        //dateTime: dateTime.add(const Duration(days: 1)),
-        dateTime: dateTime,
+        dateTime: dateTime.add(const Duration(days: 1)),
         assetAudioPath: 'assets/audio/alarm.mp3',
         loopAudio: false,
         vibrate: false,
-        volumeMax: true,
+        volumeMax: false,
         fadeDuration: 3.0,
         notificationTitle: randomVerse.chapter,
         notificationBody: randomVerse.verseText,
