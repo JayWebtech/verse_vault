@@ -30,7 +30,7 @@ class VerseController {
       );
     } else {
       if (box.isEmpty) {
-        NotificationService().sendNotificationNextDay();
+        NotificationService().sendNotificationNextDayMorning();
       }
       final verseData = VerseData()
         ..chapter = chapter

@@ -37,7 +37,36 @@ class NotificationService {
     return Future.value();
   }
 
-  void sendNotificationNextDay() async {
+  void sendNotificationEvening() async {
+    DateTime dateTime = DateTime(
+        DateTime.now().year, DateTime.now().month, DateTime.now().day, 19, 30);
+
+    await Hive.initFlutter();
+    final Box verseBox = await Hive.openBox('versevault');
+    final verseController = VerseController();
+    final VerseData? randomVerse =
+        await verseController.getRandomVerse(verseBox);
+
+    if (randomVerse != null) {
+      final alarmSettings = AlarmSettings(
+        id: 43,
+        dateTime: dateTime,
+        assetAudioPath: 'assets/audio/alarm.mp3',
+        loopAudio: false,
+        vibrate: false,
+        volumeMax: false,
+        fadeDuration: 3.0,
+        notificationTitle: randomVerse.chapter,
+        notificationBody: randomVerse.verseText,
+        enableNotificationOnKill: true,
+      
+      );
+      await Alarm.set(alarmSettings: alarmSettings);
+    }
+    return Future.value();
+  }
+
+  void sendNotificationNextDayMorning() async {
     DateTime dateTime = DateTime(
         DateTime.now().year, DateTime.now().month, DateTime.now().day, 7, 30);
 
@@ -49,7 +78,7 @@ class NotificationService {
 
     if (randomVerse != null) {
       final alarmSettings = AlarmSettings(
-        id: 43,
+        id: 44,
         dateTime: dateTime.add(const Duration(days: 1)),
         assetAudioPath: 'assets/audio/alarm.mp3',
         loopAudio: false,
@@ -63,4 +92,5 @@ class NotificationService {
       await Alarm.set(alarmSettings: alarmSettings);
     }
   }
+
 }

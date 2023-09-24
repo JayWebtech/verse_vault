@@ -29,7 +29,8 @@ void main() async {
 
   Alarm.ringStream.stream.listen((_) {
     if (!hasExecuted) {
-      NotificationService().sendNotificationNextDay();
+      NotificationService().sendNotificationNextDayMorning();
+      NotificationService().sendNotificationEvening();
       hasExecuted = true;
     }
   });
