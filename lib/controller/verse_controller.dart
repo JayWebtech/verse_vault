@@ -7,6 +7,7 @@ import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 import '../model/verses_model.dart';
+import '../utils/notifications.dart';
 
 class VerseController {
   final TextEditingController chapterController = TextEditingController();
@@ -28,6 +29,9 @@ class VerseController {
         ),
       );
     } else {
+      if (box.isEmpty) {
+        NotificationService().sendNotificationNextDay();
+      }
       final verseData = VerseData()
         ..chapter = chapter
         ..verseText = verseText
@@ -42,6 +46,10 @@ class VerseController {
           message: "Successfully added to memory box",
         ),
       );
+      // Clear the input fields
+      chapterController.clear();
+      verseTextController.clear();
+      notesController.clear();
     }
   }
 

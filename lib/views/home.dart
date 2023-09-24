@@ -20,7 +20,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Buttom Navigation Bar',
+      title: 'Verse Vault',
       home: Scaffold(
         body: const [
           Dashboard(),
